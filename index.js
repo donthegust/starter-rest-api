@@ -1,6 +1,9 @@
+require ('dotenv').config();
 const express = require('express')
 const app = express()
-const db = require('@cyclic.sh/dynamodb')
+const CyclicDB = require('@cyclic.sh/dynamodb')
+const req = require('express/lib/request')
+const db = CyclicDB(process.env.CYCLIC_DB)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
