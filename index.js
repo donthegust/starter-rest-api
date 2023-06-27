@@ -1,12 +1,12 @@
-require ('dotenv').config();
-const express = require('express')
-const app = express()
-const CyclicDB = require('@cyclic.sh/dynamodb')
-const req = require('express/lib/request')
-const db = CyclicDB(process.env.CYCLIC_DB)
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const CyclicDB = require("@cyclic.sh/dynamodb");
+const req = require("express/lib/request");
+const db = CyclicDB(process.env.CYCLIC_DB);
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // #############################################################################
 // This configures static hosting for files in /public that have the extensions
@@ -22,54 +22,172 @@ app.use(express.urlencoded({ extended: true }))
 // app.use(express.static('public', options))
 // #############################################################################
 
-// Create or Update an item
-app.post('/:col/:key', async (req, res) => {
-  console.log(req.body)
+// { // Account Example
+//   "accountId": 1,
+//   "number":"000001",
+//   "agency":"0001",
+//   "accountType":"Corrente"
+// };
 
-  const col = req.params.col
-  const key = req.params.key
-  console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).set(key, req.body)
-  console.log(JSON.stringify(item, null, 2))
-  res.json(item).end()
-})
+// { // User Example
+// {
+//   "userId":1,
+//   "name":"Test",
+//   "motherName":"MotherTest",
+//   "cpf":"123456789-10",
+//   "userName":"Test",
+//   "email":"teste@teste.com",
+//   "account": ACCOUNT_MODEL,
+//   "transactions":[
+//      TRANSACTION_MODEL,
+//      TRANSACTION_MODEL
+//   ]
+// }
 
-// Delete an item
-app.delete('/:col/:key', async (req, res) => {
-  const col = req.params.col
-  const key = req.params.key
-  console.log(`from collection: ${col} delete key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).delete(key)
-  console.log(JSON.stringify(item, null, 2))
-  res.json(item).end()
-})
+// { // Transaction Example
+//   "transactionId":1,
+//   "transactionValue":200,
+//   "transactionType":"Depósito",
+//   "incomingAccount":{
+//      "accountId":1,
+//      "number":"000001",
+//      "agency":"0328",
+//      "accountType":"Corrente"
+//   },
+//   "outgoingAccount":{
+//      "accountId":1,
+//      "number":"000001",
+//      "agency":"0328",
+//      "accountType":"Corrente"
+//   }
+// };
 
-// Get a single item
-app.get('/:col/:key', async (req, res) => {
-  const col = req.params.col
-  const key = req.params.key
-  console.log(`from collection: ${col} get key: ${key} with params ${JSON.stringify(req.params)}`)
-  const item = await db.collection(col).get(key)
-  console.log(JSON.stringify(item, null, 2))
-  res.json(item).end()
-})
+// Create or Update an account
+app.post("/accounts/:key", async (req, res) => {
+  const key = req.params.key;
+  const item = await db.collection("accounts").set(key, req.body);
 
-// Get a full listing
-app.get('/:col', async (req, res) => {
-  const col = req.params.col
-  console.log(`list collection: ${col} with params: ${JSON.stringify(req.params)}`)
-  const items = await db.collection(col).list()
-  console.log(JSON.stringify(items, null, 2))
-  res.json(items).end()
-})
+  res.json(item).end();
+});
+
+// Create or Update an user
+app.post("/users/:key", async (req, res) => {
+  const key = req.params.key;
+  const item = await db.collection("users").set(key, req.body);
+
+  res.json(item).end();
+});
+
+// Create or Update an transaction
+app.post("/transactions/:key", async (req, res) => {
+  const key = req.params.key;
+  const item = await db.collection("transactions").set(key, req.body);
+
+  res.json(item).end();
+});
+
+// Delete an account
+app.delete("/accounts/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("accounts").delete(key);
+  res.json(item).end();
+});
+
+// Delete an user
+app.delete("/users/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("users").delete(key);
+  res.json(item).end();
+});
+
+// Delete an transaction
+app.delete("/transactions/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("transactions").delete(key);
+  res.json(item).end();
+});
+
+// Get a single account
+app.get("/accounts/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("accounts").get(key);
+  res.json(item).end();
+});
+
+// Get a single user
+app.get("/users/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("users").get(key);
+  res.json(item).end();
+});
+
+// Get a single transaction
+app.get("/transactions/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("transactions").get(key);
+  res.json(item).end();
+});
+
+// Get a full listing of accounts
+app.get("/accounts", async (req, res) => {
+  const items = await db.collection("accounts").list();
+  res.json(items).end();
+});
+
+// Get a full listing of users
+app.get("/users", async (req, res) => {
+  const items = await db.collection("users").list();
+  res.json(items).end();
+});
+
+// Get a full listing of transactions
+app.get("/transactions", async (req, res) => {
+  const items = await db.collection("transactions").list();
+  res.json(items).end();
+});
+
+// Create or Update an account in the auth flux
+app.post("/auth/:id", async (req, res) => {
+  const id = req.params.id;
+  await db.collection("auth").set(id, req.body);
+
+  res.json({ auth: true });
+});
+
+// Auth flux
+app.get("/auth/:acc_data", async (req, res) => {
+  const accData = req.params.acc_data;
+  let authData = await db.collection("auth").get(accData);
+
+  // If auth data not exist in db, return false
+  if (!authData) {
+    res.json({ authorized: false });
+    return;
+  }
+
+  const allowLogin = req.body.password == authData.props.password;
+
+  const responseData = {
+    authorized: allowLogin,
+    user_id: allowLogin ? authData.props.user_id : null,
+  };
+  console.log(responseData);
+  res.json(responseData);
+});
 
 // Catch all handler for all other request.
-app.use('*', (req, res) => {
-  res.json({ msg: 'no route handler found' }).end()
-})
+app.use("*", (req, res) => {
+  res.json({ msg: "no route handler found" }).end();
+});
 
 // Start the server
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`index.js listening on ${port}`)
-})
+  console.log(`index.js listening on ${port}`);
+});
