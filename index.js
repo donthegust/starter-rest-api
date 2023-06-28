@@ -124,9 +124,8 @@ app.get("/users/:key", async (req, res) => {
 
   const item = await db.collection("users").get(key);
 
-  if(item == null)
-    res.json(false).end();
-  
+  if (item == null) res.json(false).end();
+
   res.json(item).end();
 });
 
@@ -164,6 +163,14 @@ app.post("/auth/:id", async (req, res) => {
   res.json({ auth: true });
 });
 
+// Get a single auth
+app.get("/auth/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("auth").get(key);
+  res.json(item).end();
+});
+
 // Get a full listing of auths
 app.get("/auth", async (req, res) => {
   const items = await db.collection("auth").list();
@@ -181,7 +188,10 @@ app.delete("/auth/:key", async (req, res) => {
 // Auth flux
 app.get("/auth/:acc_data", async (req, res) => {
   const accData = req.params.acc_data;
+  console.log("key: " + accData);
+
   let authData = await db.collection("auth").get(accData);
+  console.log("get user: " + authData);
 
   // If auth data not exist in db, return false
   if (!authData) {
@@ -190,6 +200,15 @@ app.get("/auth/:acc_data", async (req, res) => {
   }
 
   const allowLogin = req.body.password == authData.props.password;
+  console.log(
+    "allowLogin: " +
+      allowLogin +
+      " = " +
+      req.body.password +
+      "(get password) == " +
+      authData.props.password +
+      "(db password)"
+  );
 
   const responseData = {
     authorized: allowLogin,
