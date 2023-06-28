@@ -123,6 +123,10 @@ app.get("/users/:key", async (req, res) => {
   const key = req.params.key;
 
   const item = await db.collection("users").get(key);
+
+  if(item == null)
+    res.json(false).end();
+  
   res.json(item).end();
 });
 
