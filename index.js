@@ -160,6 +160,20 @@ app.post("/auth/:id", async (req, res) => {
   res.json({ auth: true });
 });
 
+// Get a full listing of auths
+app.get("/auth", async (req, res) => {
+  const items = await db.collection("auth").list();
+  res.json(items).end();
+});
+
+// Delete an auth
+app.delete("/auth/:key", async (req, res) => {
+  const key = req.params.key;
+
+  const item = await db.collection("auth").delete(key);
+  res.json(item).end();
+});
+
 // Auth flux
 app.get("/auth/:acc_data", async (req, res) => {
   const accData = req.params.acc_data;
