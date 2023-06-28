@@ -163,13 +163,13 @@ app.post("/auth/:id", async (req, res) => {
   res.json({ auth: true });
 });
 
-// Get a single auth
-app.get("/auth/:key", async (req, res) => {
-  const key = req.params.key;
+// // Get a single auth
+// app.get("/auth/:key", async (req, res) => {
+//   const key = req.params.key;
 
-  const item = await db.collection("auth").get(key);
-  res.json(item).end();
-});
+//   const item = await db.collection("auth").get(key);
+//   res.json(item).end();
+// });
 
 // Get a full listing of auths
 app.get("/auth", async (req, res) => {
