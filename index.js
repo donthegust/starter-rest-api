@@ -187,7 +187,8 @@ app.delete("/auth/:key", async (req, res) => {
 
 // Auth flux
 app.get("/auth/:acc_data", async (req, res) => {
-  console.log("body: " + req.body);
+  console.log("body: " + req.body.password);
+  console.log("body_params: " + req.params.password);
 
   const accData = req.params.acc_data;
   console.log("key: " + accData);
@@ -197,7 +198,7 @@ app.get("/auth/:acc_data", async (req, res) => {
 
   // If auth data not exist in db, return false
   if (!authData) {
-    res.json({ authorized: false });
+    res.json({ authorized: false }).end;
     return;
   }
 
@@ -217,7 +218,7 @@ app.get("/auth/:acc_data", async (req, res) => {
     user_id: allowLogin ? authData.props.user_id : null,
   };
   console.log(responseData);
-  res.json(responseData);
+  res.json(responseData).end;
 });
 
 // Catch all handler for all other request.
