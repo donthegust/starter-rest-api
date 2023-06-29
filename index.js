@@ -163,14 +163,6 @@ app.post("/auth/:id", async (req, res) => {
   res.json({ auth: true });
 });
 
-// // Get a single auth
-// app.get("/auth/:key", async (req, res) => {
-//   const key = req.params.key;
-
-//   const item = await db.collection("auth").get(key);
-//   res.json(item).end();
-// });
-
 // Get a full listing of auths
 app.get("/auth", async (req, res) => {
   const items = await db.collection("auth").list();
@@ -191,9 +183,12 @@ app.get("/auth/:acc_data", async (req, res) => {
   console.log("body_params: " + req.params.password);
 
   const accData = req.params.acc_data;
+  const key = accData.split("|");
+  const login = key[0];
+  const password = key[1];
   console.log("key: " + accData);
 
-  let authData = await db.collection("auth").get(accData);
+  let authData = await db.collection("auth").get(login);
   console.log("get user: " + authData);
 
   // If auth data not exist in db, return false
@@ -202,7 +197,7 @@ app.get("/auth/:acc_data", async (req, res) => {
     return;
   }
 
-  const allowLogin = req.body.password == authData.props.password;
+  const allowLogin = password == authData.props.password;
   console.log(
     "allowLogin: " +
       allowLogin +
