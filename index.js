@@ -180,7 +180,7 @@ app.delete("/auth/:key", async (req, res) => {
 // Auth flux
 app.get("/auth/:acc_data", async (req, res) => {
   console.log("body: " + req.body.password);
-  console.log("body_params: " + req.params.password);
+  // console.log("body_params: " + req.params.password);
 
   const accData = req.params.acc_data;
   const key = accData.split("|");
